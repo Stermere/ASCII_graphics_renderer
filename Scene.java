@@ -16,32 +16,31 @@ public class Scene {
     double FOV = 90;
     int[] resolution = {125, 70};
     double renderDist = 100;
-    double[] gloablLightAngle = {-30, 20};
-    double[] globalLightVector = angleToVector(gloablLightAngle);
     double backroundColor = 0;
     double degreePerPixle = FOV / Math.sqrt((Math.pow(resolution[0], 2) + Math.pow(resolution[1], 2)));
     // 16 char pallet
     char[] pixValues = {'.', ',', '-', '"', '~', ':', ';', '^', '>', '=', '+', '!', '*', '#', '$', '@'};
-    // 16 char pallet
+    // 16 char pallet 2
     //char[] pixValues = {'.','-',',',':','^','~','*','=','+','>','a','q','#','$','%','@'};
 
     // objects in the scene
-    ArrayList sceneObjects = new ArrayList<SceneObject>();
+    ArrayList<SceneObject> sceneObjects = new ArrayList<SceneObject>();
+    ArrayList<LightSource> sceneLights = new ArrayList<LightSource>();
     
     // load a scene
     public void loadScene(){
         // real load goes here
         // for now this will be a good test
         sceneObjects.add(new SceneObject(new Sphere(4.3, -1.1, 0.1, 1.0, 16)));
-        sceneObjects.add(new SceneObject(new Sphere(4.3, 1.5, -1.5, 0.2, 16)));
         sceneObjects.add(new SceneObject(new Sphere(4.3, 1.0, -1.5, 1.1, 16)));
-        sceneObjects.add(new SceneObject(new Sphere(-4.3, 1.5, 2.5, 2.0, 16)));
         sceneObjects.add(new SceneObject(new Sphere(4.3, 1.5, 0.0, 0.4, 16)));
-        sceneObjects.add(new SceneObject(new Sphere(0.0, 4.0, -1.5, 0.2, 16)));
-        sceneObjects.add(new SceneObject(new Sphere(0.0, -3.5, -1.5, 0.2, 16)));        
-        sceneObjects.add(new SceneObject(new Sphere(0.0, 4.0, .6, 0.2, 16)));
-        sceneObjects.add(new SceneObject(new Sphere(0.0, -3.5, -0.5, 0.2, 16)));
+        sceneObjects.add(new SceneObject(new Sphere(6, -0.2, 0.0, 0.7, 16)));
+        sceneObjects.add(new SceneObject(new Sphere(6, -4, -2.1, 0.9, 16)));
+
         sceneObjects.add(new SceneObject(new Plane(-2, 16)));
+
+        // load light sources
+        sceneLights.add(new LightSource(-5, 0, 6, 16));
 
 
     }
@@ -86,12 +85,17 @@ public class Scene {
         if (lowestDist < 0.0001){
             // once the first collision is found calculate the shading
             double[] normalVector = closestObject.getNormalVector(x, y, z);
+            double[] lightVector = null;
 
-            // calculate the angle of the light hitting the object
+            // calculate the angle of the light sources in the scene relative to the point found to the the surface of the sphere
+            for (LightSource light : sceneLights){
+                lightVector = light.getAngleToSelf(x, y, z);
+                lightVector = angleToVector(lightVector);
+            }
+            
 
 
-
-            double luminence = dotProduct(globalLightVector[0], globalLightVector[1], globalLightVector[2], normalVector[0], normalVector[1], normalVector[2]);
+            double luminence = dotProduct(lightVector[0], lightVector[1], lightVector[2], normalVector[0], normalVector[1], normalVector[2]);
             double color = closestObject.getColor();
 
             return getChar(color, luminence);
