@@ -14,7 +14,8 @@ public class Scene {
 
     // settings
     double FOV = 90;
-    int[] resolution = {125, 70};
+    int[] resolution = {125, 70}; // for 1440p monitors
+    //int[] resolution = {60, 35}; // for my laptop that is 1080 and scaled
     double renderDist = 100;
     double backroundColor = 0;
     double degreePerPixle = FOV / Math.sqrt((Math.pow(resolution[0], 2) + Math.pow(resolution[1], 2)));
