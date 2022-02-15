@@ -13,6 +13,7 @@ public class Main {
 
         // keep track time taken to render and display each frame
         long avgTimePerframe = 0;
+        scene.camZ = -2;
 
         // main loop
         while (running){
@@ -22,7 +23,9 @@ public class Main {
             displayFrame(frame);
             // move the camera up and down and the light source around the circles
             scene.camZ = scene.camZ + (Math.sin((index * Math.PI / 180) * 2) / 21.5);
-            scene.gloablLightAngle[0] = scene.gloablLightAngle[0] + (Math.sin((index * Math.PI / 180)));
+            scene.gloablLightAngle[1] = scene.gloablLightAngle[1] + (Math.sin((index * Math.PI / 180 * 1) * -1));
+            scene.gloablLightAngle[0] = scene.gloablLightAngle[0] + (Math.sin((index * Math.PI / 180 * 2) * 1));
+
             scene.globalLightVector = scene.angleToVector(scene.gloablLightAngle);
             index++;
             avgTimePerframe = avgTimePerframe + (System.nanoTime() - startTime);

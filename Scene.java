@@ -6,21 +6,24 @@ public class Scene {
     double camX = 0;
     double camY = 0;
     double camZ = 0;
-    double camA = 0; // yaw
-    double camB = 0; // pitch
+    double camYaw = 0; // yaw
+    double camPitch = 0; // pitch
+    
+    // maximum iterations of of ray marching
+    static int MAXITERS = 1000;
 
     // settings
-    double FOV = 100;
+    double FOV = 90;
     int[] resolution = {125, 70};
     double renderDist = 100;
-    double[] gloablLightAngle = {-30, -30};
+    double[] gloablLightAngle = {-30, 20};
     double[] globalLightVector = angleToVector(gloablLightAngle);
     double backroundColor = 0;
     double degreePerPixle = FOV / Math.sqrt((Math.pow(resolution[0], 2) + Math.pow(resolution[1], 2)));
-    // 8 char pallet
-    //char[] pixValues = {'.',',','~','*','=','+','#','@'};
     // 16 char pallet
-    char[] pixValues = {'.','-',',',':','^','~','*','=','+','>','a','q','#','$','%','@'};
+    char[] pixValues = {'.', ',', '-', '"', '~', ':', ';', '^', '>', '=', '+', '!', '*', '#', '$', '@'};
+    // 16 char pallet
+    //char[] pixValues = {'.','-',',',':','^','~','*','=','+','>','a','q','#','$','%','@'};
 
     // objects in the scene
     ArrayList sceneObjects = new ArrayList<SceneObject>();
@@ -46,11 +49,11 @@ public class Scene {
     // renders a frame
     public char[][] renderFrame(){
         char[][] frame = new char[resolution[1]][resolution[0]];
-        double angleB = camB + ((resolution[1] / 2) * degreePerPixle);
+        double angleB = camPitch + ((resolution[1] / 2) * degreePerPixle);
         for (int t = 0; t < resolution[1]; t++){
-            double angleA = camA - ((resolution[0] / 2) * degreePerPixle);
+            double angleA = camYaw - ((resolution[0] / 2) * degreePerPixle);
             for (int p = 0; p < resolution[0]; p++){
-                int maxIters = 40;
+                int maxIters = MAXITERS;
                 char pixval = getPixelValue(angleA, angleB, camX, camY, camZ, maxIters);
                 frame[t][p] = pixval;
 
@@ -66,18 +69,28 @@ public class Scene {
         double dist = Double.POSITIVE_INFINITY;
         double lowestDist = Double.POSITIVE_INFINITY;
         SceneObject closestObject = null;
-        for (int i = 0; i < sceneObjects.size(); i++){
-            dist = ((SceneObject) sceneObjects.get(i)).signedDistTo(x,y,z);
+        if (maxIters != MAXITERS){
+            for (int i = 0; i < sceneObjects.size(); i++){
+                dist = ((SceneObject) sceneObjects.get(i)).signedDistTo(x,y,z);
 
-            if (dist < lowestDist){
-                lowestDist = dist;
-                closestObject = (SceneObject) sceneObjects.get(i);
+                if (dist < lowestDist){
+                    lowestDist = dist;
+                    closestObject = (SceneObject) sceneObjects.get(i);
+                }
             }
+        }
+        else    {
+            lowestDist = 0.1;
         }
         // if render distance is hit or a object is contacted calculate its shading and return
         if (lowestDist < 0.0001){
             // once the first collision is found calculate the shading
             double[] normalVector = closestObject.getNormalVector(x, y, z);
+
+            // calculate the angle of the light hitting the object
+
+
+
             double luminence = dotProduct(globalLightVector[0], globalLightVector[1], globalLightVector[2], normalVector[0], normalVector[1], normalVector[2]);
             double color = closestObject.getColor();
 
