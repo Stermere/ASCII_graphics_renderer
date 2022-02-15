@@ -14,7 +14,9 @@ public class Main {
 
         // keep track time taken to render and display each frame
         long avgTimePerframe = 0;
-        scene.camZ = -1;
+        scene.camZ = 0;
+        scene.camX = -2;
+        scene.camPitch = -10;
 
         // main loop
         while (running){
@@ -23,9 +25,15 @@ public class Main {
             clearFrame();
             displayFrame(frame);
             // move the camera up and down and the light source around the circles
-            scene.camZ = scene.camZ + (Math.cos((index * Math.PI / 180) * 2) / 30);
-            light.setY(light.y + (Math.cos((index * (Math.PI / 180) * 5) * 1)));
-            //light.setZ(light.z + (Math.sin((index * Math.PI / 180 * 2) * 1)));
+            //scene.camZ = scene.camZ + (Math.cos((index * Math.PI / 180) * 2) / 30);
+            //light.setY(light.y + (Math.cos((index * (Math.PI / 180) * 5) * 1)));
+            //light.setZ(light.z + (Math.cos((index * Math.PI / 180 * 5) * 1)));
+
+            // move the camera in a circle around the circles
+            scene.camX += 0.2 * Math.sin(scene.camYaw *  Math.PI / 180);
+            scene.camY -= 0.2 * Math.cos(scene.camYaw *  Math.PI / 180);
+            scene.camYaw += 1.5;
+
 
             index++;
             avgTimePerframe = avgTimePerframe + (System.nanoTime() - startTime);

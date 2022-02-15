@@ -25,7 +25,7 @@ public class Plane {
     public double[] getNormalVector(double z_){
         // return the unit vector of a flat plane for now 
         // since this is only used for the ground might as well not waste time calculating the same vector
-        double[] unitVector = {0, 0, -1};
+        double[] unitVector = {1, 0, 0};
         return unitVector;
     }
 }
