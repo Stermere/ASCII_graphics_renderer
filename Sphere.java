@@ -28,9 +28,8 @@ public class Sphere{
         return Math.sqrt((Math.pow(x-x_,2) + Math.pow(y-y_,2) + Math.pow(z-z_,2))) - r;
     }
     public double[] getNormalVector(double x_, double y_, double z_){
-        double xz = Math.sqrt(Math.pow((x_-x),2) + Math.pow((z_-z),2));
-        double xyz = Math.sqrt(Math.pow((xz),2) + Math.pow((y_-y),2));
-        double[] vector = {((x-x_)/xyz), ((y-y_)/xyz), ((z-z_)/xyz)};
+        double hypotonusDist = Math.sqrt(Math.pow(x_-x, 2) + Math.pow(y_-y, 2) + Math.pow(z_-z, 2));
+        double[] vector = {-((x-x_)/hypotonusDist), -((y-y_)/hypotonusDist), -((z-z_)/hypotonusDist)};
         return vector;
     }
 }

@@ -90,8 +90,7 @@ public class Scene {
 
             // calculate the angle of the light sources in the scene relative to the point found to the the surface of the sphere
             for (LightSource light : sceneLights){
-                lightVector = light.getAngleToSelf(x, y, z);
-                lightVector = angleToVector(lightVector);
+                lightVector = light.getNormalVector(x, y, z);
             }
             
 
@@ -124,7 +123,7 @@ public class Scene {
     public double dotProduct(double x1, double y1, double z1, double x2, double y2, double z2){
         return (x1*x2)+(y1*y2)+(z1*z2);
     }
-    // convert angle values in to a unit vector
+    // convert angle values in to a unit vector TODO this is broken fix it
     public double[] angleToVector(double[] angle){
         double z = Math.sin(angle[1] * Math.PI / 180);
         double x = (Math.cos(angle[1] * Math.PI / 180)) * Math.cos(angle[0] * Math.PI / 180);

@@ -15,15 +15,11 @@ public class LightSource {
         intensity = intensity_;
     }
 
-    public double[] getAngleToSelf(double x_, double y_, double z_){
-        // get the angle from point that is being shaded to the light source
-        x_ = x_ - x;
-        y_ = y_ - y;
-        z_ = z_ - z;
-        double yaw_ = Math.atan(y_/x_) * (180 / Math.PI);
-        double pitch_ = Math.atan(z_/x_) * (180 / Math.PI);
-        double[] angle = {yaw_, pitch_};
-        return angle;
+    public double[] getNormalVector(double x_, double y_, double z_){
+        // get the normal of the light that is refelcting of the surface
+        double hypotonusDist = Math.sqrt(Math.pow(x_-x, 2) + Math.pow(y_-y, 2) + Math.pow(z_-z, 2));
+        double[] vector = {((x-x_)/hypotonusDist), ((y-y_)/hypotonusDist), ((z-z_)/hypotonusDist)};
+        return vector;
     }
 
     public void setX(double val){
