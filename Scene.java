@@ -16,6 +16,8 @@ public class Scene {
     double FOV = 90;
     int[] resolution = {125, 70}; // for 1440p monitors
     //int[] resolution = {60, 35}; // for my laptop that is 1080 and scaled
+    //int[] resolution = {200, 125}; // I dont know what cpu can run this at more than 10fps but if you zoom out your window it looks cool
+
     double renderDist = 100;
     double backroundColor = 0;
     double degreePerPixle = FOV / Math.sqrt((Math.pow(resolution[0], 2) + Math.pow(resolution[1], 2)));
@@ -29,6 +31,7 @@ public class Scene {
     ArrayList<LightSource> sceneLights = new ArrayList<LightSource>();
     
     // load a scene
+    // when making a scene remember to always have at least one light source
     public void loadScene(){
         // real load goes here
         // for now this will be a good test
@@ -38,7 +41,7 @@ public class Scene {
         sceneObjects.add(new SceneObject(new Sphere(6, -0.2, 0.0, 0.7, 16)));
         sceneObjects.add(new SceneObject(new Sphere(6, -4, -2.1, 0.9, 16)));
 
-        sceneObjects.add(new SceneObject(new Plane(-2, 10)));
+        sceneObjects.add(new SceneObject(new Plane(-2, 16)));
 
         // load light sources
         sceneLights.add(new LightSource(0, 0, 4, 16));
@@ -87,18 +90,25 @@ public class Scene {
             // once the first collision is found calculate the shading
             double[] normalVector = closestObject.getNormalVector(x, y, z);
             double[] lightVector = null;
+            double luminence;
+            double highestLuminence = 0;
 
-            // calculate the angle of the light sources in the scene relative to the point found to the the surface of the sphere
+            // calculate the luminance of the pixel being shaded
             for (LightSource light : sceneLights){
                 lightVector = light.getNormalVector(x, y, z);
+                luminence = dotProduct(lightVector[0], lightVector[1], lightVector[2], normalVector[0], normalVector[1], normalVector[2]);
+                if (luminence > highestLuminence){
+                    highestLuminence = luminence;
+                }
             }
+            // check if the object has reflectivity and if so reflect the ray and find its next collision
+
+
+
             
-
-
-            double luminence = dotProduct(lightVector[0], lightVector[1], lightVector[2], normalVector[0], normalVector[1], normalVector[2]);
             double color = closestObject.getColor();
 
-            return getChar(color, luminence);
+            return getChar(color, highestLuminence);
         }
         if (lowestDist > renderDist || maxIters <= 0){
             return ' ';
@@ -111,6 +121,7 @@ public class Scene {
         // recursivly call this function to get the value
         return getPixelValue(a, b, xNext, yNext, zNext, maxIters - 1);
     }
+
     // translate a color value to a char
     public char getChar(double color, double luminence){
         if (luminence < 0){
@@ -119,11 +130,13 @@ public class Scene {
         color = color*luminence;
         return pixValues[(int) color];
     }
+
     // calculate the dot product of two normalized vectors
     public double dotProduct(double x1, double y1, double z1, double x2, double y2, double z2){
         return (x1*x2)+(y1*y2)+(z1*z2);
     }
-    // convert angle values in to a unit vector TODO this is broken fix it
+
+    // convert angle values in to a unit vector
     public double[] angleToVector(double[] angle){
         double z = Math.sin(angle[1] * Math.PI / 180);
         double x = (Math.cos(angle[1] * Math.PI / 180)) * Math.cos(angle[0] * Math.PI / 180);
