@@ -22,7 +22,7 @@ public class Scene {
     double backroundColor = 0;
     double degreePerPixle = FOV / Math.sqrt((Math.pow(resolution[0], 2) + Math.pow(resolution[1], 2)));
     // 16 char pallet
-    char[] pixValues = {'.', ',', '-', '"', '~', ':', ';', '^', '>', '=', '+', '!', '*', '#', '$', '@'};
+    char[] pixValues = {' ', '.', ',', '-', '"', '~', ':', ';', '^', '>', '=', '+', '!', '*', '#', '$', '@'};
     // 16 char pallet 2
     //char[] pixValues = {'.','-',',',':','^','~','*','=','+','>','a','q','#','$','%','@'};
 
@@ -46,7 +46,6 @@ public class Scene {
         // load light sources
         sceneLights.add(new LightSource(0, 0, 4, 16));
 
-
     }
 
     // renders a frame
@@ -57,7 +56,8 @@ public class Scene {
             double angleA = camYaw - ((resolution[0] / 2) * degreePerPixle);
             for (int p = 0; p < resolution[0]; p++){
                 int maxIters = MAXITERS;
-                char pixval = getPixelValue(angleA, angleB, camX, camY, camZ, maxIters);
+                double pixcol = getPixelValue(angleA, angleB, camX, camY, camZ, maxIters, 0);
+                char pixval = getChar(pixcol);
                 frame[t][p] = pixval;
 
                 angleA = angleA + degreePerPixle;
@@ -66,8 +66,9 @@ public class Scene {
         }
         return frame;
     }
+
     // get the value of a ray cast on the scene
-    public char getPixelValue(double a, double b, double x, double y, double z, int maxIters){
+    public double getPixelValue(double a, double b, double x, double y, double z, int maxIters, int bounceIter){
         // get closest signed distance
         double dist = Double.POSITIVE_INFINITY;
         double lowestDist = Double.POSITIVE_INFINITY;
@@ -82,7 +83,7 @@ public class Scene {
                 }
             }
         }
-        else    {
+        else {
             lowestDist = 0.1;
         }
         // if render distance is hit or a object is contacted calculate its shading and return
@@ -107,11 +108,10 @@ public class Scene {
 
             
             double color = closestObject.getColor();
-
-            return getChar(color, highestLuminence);
+            return getReflectionColor(color, highestLuminence);
         }
         if (lowestDist > renderDist || maxIters <= 0){
-            return ' ';
+            return 0;
         }
         // calculate next starting point
         double zNext = z + lowestDist * Math.sin(b * Math.PI / 180);
@@ -119,15 +119,20 @@ public class Scene {
         double yNext = y + (lowestDist * Math.cos(b * Math.PI / 180)) * Math.sin(a * Math.PI / 180);
         
         // recursivly call this function to get the value
-        return getPixelValue(a, b, xNext, yNext, zNext, maxIters - 1);
+        return getPixelValue(a, b, xNext, yNext, zNext, maxIters - 1, 0);
     }
 
-    // translate a color value to a char
-    public char getChar(double color, double luminence){
-        if (luminence < 0){
+    // take the shading and add the color to the value
+    public double getReflectionColor(double color, double luminence){
+        color = color * luminence;
+        return color;
+    }
+
+    // convert a color value to a char
+    public char getChar(double color){
+        if (color < 0){
             return pixValues[0];
         }
-        color = color*luminence;
         return pixValues[(int) color];
     }
 
