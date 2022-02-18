@@ -6,13 +6,21 @@ import java.lang.Math;
 public class Plane {
     double z = 0;
     double c = 0;
+    boolean reflectivity = false;
 
     public Plane(double z_, double c_){
         z = z_;
         c = c_;
 
+    }
+
+    public Plane(double z_, double c_, boolean reflectivity_){
+        z = z_;
+        c = c_;
+        reflectivity = reflectivity_;
 
     }
+
     public double distTo(double z_){
         // since it is a 2d plane just pass through to signed dist
         return signedDistTo(z_);

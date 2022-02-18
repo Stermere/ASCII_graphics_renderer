@@ -11,10 +11,12 @@ public class Scene {
     
     // maximum iterations of of ray marching
     static int MAXITERS = 1000;
+    static int BOUNCECOUNT = 1;
+
 
     // settings
     double FOV = 90;
-    int[] resolution = {125, 70}; // for 1440p monitors
+    int[] resolution = {125, 70}; // for 1440p monitors you need a fast cpu to run this at 30 fps
     //int[] resolution = {60, 35}; // for my laptop that is 1080 and scaled
     //int[] resolution = {200, 125}; // I dont know what cpu can run this at more than 10fps but if you zoom out your window it looks cool
 
@@ -41,7 +43,7 @@ public class Scene {
         sceneObjects.add(new SceneObject(new Sphere(6, -0.2, 0.0, 0.7, 16)));
         sceneObjects.add(new SceneObject(new Sphere(6, -4, -2.1, 0.9, 16)));
 
-        sceneObjects.add(new SceneObject(new Plane(-2, 16)));
+        sceneObjects.add(new SceneObject(new Plane(-2, 16, true)));
 
         // load light sources
         sceneLights.add(new LightSource(0, 0, 4, 16));
@@ -56,7 +58,8 @@ public class Scene {
             double angleA = camYaw - ((resolution[0] / 2) * degreePerPixle);
             for (int p = 0; p < resolution[0]; p++){
                 int maxIters = MAXITERS;
-                double pixcol = getPixelValue(angleA, angleB, camX, camY, camZ, maxIters, 0);
+                int bounceCount = BOUNCECOUNT;
+                double pixcol = getPixelValue(angleA, angleB, camX, camY, camZ, maxIters, bounceCount);
                 char pixval = getChar(pixcol);
                 frame[t][p] = pixval;
 
@@ -103,7 +106,24 @@ public class Scene {
                 }
             }
             // check if the object has reflectivity and if so reflect the ray and find its next collision
-
+            if (closestObject.getReflectivity() && bounceIter != 0){
+                // calculate the new angle for the light to follow
+                double[] angle = {a, b};
+                double[] v = angleToVector(angle);
+                v[0] = v[0] + normalVector[0];
+                v[1] = v[1] + normalVector[1];
+                v[2] = v[2] + normalVector[2];
+                double[] newAngle = vectorToAngle(v);
+                a = newAngle[0];
+                b = newAngle[1];
+                // calculate next starting point
+                double zNext = z + (lowestDist * 5) * Math.sin(b * Math.PI / 180);
+                double xNext = x + ((lowestDist * 5) * Math.cos(b * Math.PI / 180)) * Math.cos(a * Math.PI / 180);
+                double yNext = y + ((lowestDist * 5) * Math.cos(b * Math.PI / 180)) * Math.sin(a * Math.PI / 180);
+                
+                // recursivly call this function to get the value
+                return getPixelValue(a, b, xNext, yNext, zNext, maxIters - 1, bounceIter - 1);
+            }
 
 
             
@@ -119,7 +139,7 @@ public class Scene {
         double yNext = y + (lowestDist * Math.cos(b * Math.PI / 180)) * Math.sin(a * Math.PI / 180);
         
         // recursivly call this function to get the value
-        return getPixelValue(a, b, xNext, yNext, zNext, maxIters - 1, 0);
+        return getPixelValue(a, b, xNext, yNext, zNext, maxIters - 1, bounceIter);
     }
 
     // take the shading and add the color to the value
@@ -148,6 +168,16 @@ public class Scene {
         double y = (Math.cos(angle[1] * Math.PI / 180)) * Math.sin(angle[0] * Math.PI / 180);
         double[] vector = {x,y,z};
         return vector;
+    }
+
+    public double[] vectorToAngle(double[] vector){
+        double x = vector[0];
+        double y = vector[1];
+        double z = vector[2];
+        double yaw = Math.atan(x/y) * (180/Math.PI);
+        double pitch = Math.atan(z/x) * (180/Math.PI);
+        double[] angle = {yaw, pitch};
+        return angle;
     }
     
 }

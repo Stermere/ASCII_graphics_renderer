@@ -43,4 +43,14 @@ public class SceneObject {
         }
         return (Double) null;
     }
+
+    public boolean getReflectivity(){
+        if (sphere != null){
+            return sphere.reflectivity;
+        }
+        else if (plane != null){
+            return plane.reflectivity;
+        }
+        return false;
+    }
 }
