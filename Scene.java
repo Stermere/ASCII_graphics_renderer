@@ -11,14 +11,14 @@ public class Scene {
     
     // maximum iterations of of ray marching
     static int MAXITERS = 1000;
-    static int BOUNCECOUNT = 1;
+    static int BOUNCECOUNT = 5;
 
 
     // settings
     double FOV = 90;
-    int[] resolution = {125, 70}; // for 1440p monitors you need a fast cpu to run this at 30 fps
+    //int[] resolution = {125, 70}; // for 1440p monitors you need a fast cpu to run this at 30 fps
     //int[] resolution = {60, 35}; // for my laptop that is 1080 and scaled
-    //int[] resolution = {200, 125}; // I dont know what cpu can run this at more than 10fps but if you zoom out your window it looks cool
+    int[] resolution = {200, 125}; // I dont know what cpu can run this at more than 10fps but if you zoom out your window it looks cool
 
     double renderDist = 100;
     double backroundColor = 0;
@@ -43,7 +43,9 @@ public class Scene {
         sceneObjects.add(new SceneObject(new Sphere(6, -0.2, 0.0, 0.7, 16)));
         sceneObjects.add(new SceneObject(new Sphere(6, -4, -2.1, 0.9, 16)));
 
-        sceneObjects.add(new SceneObject(new Plane(-2, 16, true)));
+        sceneObjects.add(new SceneObject(new Sphere(3, -6, 2, 1.5, 16, true)));
+
+        sceneObjects.add(new SceneObject(new Plane(-2, 16)));
 
         // load light sources
         sceneLights.add(new LightSource(0, 0, 4, 16));
@@ -57,9 +59,10 @@ public class Scene {
         for (int t = 0; t < resolution[1]; t++){
             double angleA = camYaw - ((resolution[0] / 2) * degreePerPixle);
             for (int p = 0; p < resolution[0]; p++){
+                double[] vector = angleToVector(angleA, angleB);
                 int maxIters = MAXITERS;
                 int bounceCount = BOUNCECOUNT;
-                double pixcol = getPixelValue(angleA, angleB, camX, camY, camZ, maxIters, bounceCount);
+                double pixcol = getPixelValue(vector, camX, camY, camZ, maxIters, bounceCount);
                 char pixval = getChar(pixcol);
                 frame[t][p] = pixval;
 
@@ -71,7 +74,7 @@ public class Scene {
     }
 
     // get the value of a ray cast on the scene
-    public double getPixelValue(double a, double b, double x, double y, double z, int maxIters, int bounceIter){
+    public double getPixelValue(double[] vector, double x, double y, double z, int maxIters, int bounceIter){
         // get closest signed distance
         double dist = Double.POSITIVE_INFINITY;
         double lowestDist = Double.POSITIVE_INFINITY;
@@ -108,21 +111,16 @@ public class Scene {
             // check if the object has reflectivity and if so reflect the ray and find its next collision
             if (closestObject.getReflectivity() && bounceIter != 0){
                 // calculate the new angle for the light to follow
-                double[] angle = {a, b};
-                double[] v = angleToVector(angle);
-                v[0] = v[0] + normalVector[0];
-                v[1] = v[1] + normalVector[1];
-                v[2] = v[2] + normalVector[2];
-                double[] newAngle = vectorToAngle(v);
-                a = newAngle[0];
-                b = newAngle[1];
+                vector[0] = vector[0] + normalVector[0];
+                vector[1] = vector[1] + normalVector[1];
+                vector[2] = vector[2] + normalVector[2];
                 // calculate next starting point
-                double zNext = z + (lowestDist * 5) * Math.sin(b * Math.PI / 180);
-                double xNext = x + ((lowestDist * 5) * Math.cos(b * Math.PI / 180)) * Math.cos(a * Math.PI / 180);
-                double yNext = y + ((lowestDist * 5) * Math.cos(b * Math.PI / 180)) * Math.sin(a * Math.PI / 180);
+                double xNext = x + lowestDist * vector[0];
+                double yNext = y + lowestDist * vector[1];
+                double zNext = z + lowestDist * vector[2];
                 
                 // recursivly call this function to get the value
-                return getPixelValue(a, b, xNext, yNext, zNext, maxIters - 1, bounceIter - 1);
+                return getPixelValue(vector, xNext, yNext, zNext, maxIters - 1, bounceIter - 1);
             }
 
 
@@ -134,12 +132,12 @@ public class Scene {
             return 0;
         }
         // calculate next starting point
-        double zNext = z + lowestDist * Math.sin(b * Math.PI / 180);
-        double xNext = x + (lowestDist * Math.cos(b * Math.PI / 180)) * Math.cos(a * Math.PI / 180);
-        double yNext = y + (lowestDist * Math.cos(b * Math.PI / 180)) * Math.sin(a * Math.PI / 180);
+        double xNext = x + lowestDist * vector[0];
+        double yNext = y + lowestDist * vector[1];
+        double zNext = z + lowestDist * vector[2];
         
         // recursivly call this function to get the value
-        return getPixelValue(a, b, xNext, yNext, zNext, maxIters - 1, bounceIter);
+        return getPixelValue(vector, xNext, yNext, zNext, maxIters - 1, bounceIter);
     }
 
     // take the shading and add the color to the value
@@ -162,10 +160,10 @@ public class Scene {
     }
 
     // convert angle values in to a unit vector
-    public double[] angleToVector(double[] angle){
-        double z = Math.sin(angle[1] * Math.PI / 180);
-        double x = (Math.cos(angle[1] * Math.PI / 180)) * Math.cos(angle[0] * Math.PI / 180);
-        double y = (Math.cos(angle[1] * Math.PI / 180)) * Math.sin(angle[0] * Math.PI / 180);
+    public double[] angleToVector(double a, double b){
+        double z = Math.sin(b * Math.PI / 180);
+        double x = (Math.cos(b * Math.PI / 180)) * Math.cos(a * Math.PI / 180);
+        double y = (Math.cos(b * Math.PI / 180)) * Math.sin(a * Math.PI / 180);
         double[] vector = {x,y,z};
         return vector;
     }
