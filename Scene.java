@@ -10,15 +10,15 @@ public class Scene {
     double camPitch = 0; // pitch
     
     // maximum iterations of of ray marching
-    static int MAXITERS = 1000;
+    static int MAXITERS = 2000;
     static int BOUNCECOUNT = 5;
 
 
     // settings
-    double FOV = 90;
-    //int[] resolution = {125, 70}; // for 1440p monitors you need a fast cpu to run this at 30 fps
+    double FOV = 100;
+    int[] resolution = {125, 70}; // for 1440p monitors you need a fast cpu to run this at 30 fps
     //int[] resolution = {60, 35}; // for my laptop that is 1080 and scaled
-    int[] resolution = {200, 125}; // I dont know what cpu can run this at more than 10fps but if you zoom out your window it looks cool
+    //int[] resolution = {200, 125}; // I dont know what cpu can run this at more than 10fps but if you zoom out your window it looks cool
 
     double renderDist = 100;
     double backroundColor = 0;
@@ -43,12 +43,12 @@ public class Scene {
         sceneObjects.add(new SceneObject(new Sphere(6, -0.2, 0.0, 0.7, 16)));
         sceneObjects.add(new SceneObject(new Sphere(6, -4, -2.1, 0.9, 16)));
 
-        sceneObjects.add(new SceneObject(new Sphere(3, -6, 2, 1.5, 16, true)));
-
-        sceneObjects.add(new SceneObject(new Plane(-2, 16)));
+        //sceneObjects.add(new SceneObject(new Sphere(-12, 0, 2, 4, 16, true)));
+        sceneObjects.add(new SceneObject(new Plane(-2, 16, true)));
 
         // load light sources
         sceneLights.add(new LightSource(0, 0, 4, 16));
+        //sceneLights.add(new LightSource(4, -8, 4, 16));
 
     }
 
@@ -97,36 +97,37 @@ public class Scene {
             // once the first collision is found calculate the shading
             double[] normalVector = closestObject.getNormalVector(x, y, z);
             double[] lightVector = null;
-            double luminence;
-            double highestLuminence = 0;
+            double luminence = 0;
+            double luminenceFromLight;
 
             // calculate the luminance of the pixel being shaded
             for (LightSource light : sceneLights){
                 lightVector = light.getNormalVector(x, y, z);
-                luminence = dotProduct(lightVector[0], lightVector[1], lightVector[2], normalVector[0], normalVector[1], normalVector[2]);
-                if (luminence > highestLuminence){
-                    highestLuminence = luminence;
-                }
+                luminenceFromLight = dotProduct(lightVector[0], lightVector[1], lightVector[2], normalVector[0], normalVector[1], normalVector[2]);
+                luminence += luminenceFromLight;
             }
+
             // check if the object has reflectivity and if so reflect the ray and find its next collision
             if (closestObject.getReflectivity() && bounceIter != 0){
                 // calculate the new angle for the light to follow
-                vector[0] = vector[0] + normalVector[0];
-                vector[1] = vector[1] + normalVector[1];
-                vector[2] = vector[2] + normalVector[2];
+                // using this equation r = d-2(d.n)n 
+                double dotProduct = dotProduct(vector[0], vector[1], vector[2], normalVector[0], normalVector[1], normalVector[2]);
+                vector[0] = vector[0] - (2 * dotProduct * normalVector[0]);
+                vector[1] = vector[1] - (2 * dotProduct * normalVector[1]);
+                vector[2] = vector[2] - (2 * dotProduct * normalVector[2]);
+
                 // calculate next starting point
                 double xNext = x + lowestDist * vector[0];
                 double yNext = y + lowestDist * vector[1];
                 double zNext = z + lowestDist * vector[2];
                 
                 // recursivly call this function to get the value
-                return getPixelValue(vector, xNext, yNext, zNext, maxIters - 1, bounceIter - 1);
+                return getPixelValue(vector, xNext, yNext, zNext, MAXITERS, bounceIter - 1);
             }
 
 
-            
             double color = closestObject.getColor();
-            return getReflectionColor(color, highestLuminence);
+            return getReflectionColor(color, luminence);
         }
         if (lowestDist > renderDist || maxIters <= 0){
             return 0;
@@ -151,6 +152,9 @@ public class Scene {
         if (color < 0){
             return pixValues[0];
         }
+        if (color >= pixValues.length - 1){
+            return pixValues[pixValues.length - 1];
+        }
         return pixValues[(int) color];
     }
 
@@ -168,6 +172,7 @@ public class Scene {
         return vector;
     }
 
+    // its best not to use this since it is slower but it also can intrduce hard to find bugs
     public double[] vectorToAngle(double[] vector){
         double x = vector[0];
         double y = vector[1];

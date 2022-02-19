@@ -43,7 +43,7 @@ public class Sphere{
 
     public double[] getNormalVector(double x_, double y_, double z_){
         double hypotonusDist = Math.sqrt(Math.pow(x_-x, 2) + Math.pow(y_-y, 2) + Math.pow(z_-z, 2));
-        double[] vector = {-((x-x_)/hypotonusDist), -((y-y_)/hypotonusDist), -((z-z_)/hypotonusDist)};
+        double[] vector = {((x_-x)/hypotonusDist), ((y_-y)/hypotonusDist), ((z_-z)/hypotonusDist)};
         return vector;
     }
 }
