@@ -43,11 +43,11 @@ public class Scene {
         sceneObjects.add(new SceneObject(new Sphere(6, -0.2, 0.0, 0.7, 16)));
         sceneObjects.add(new SceneObject(new Sphere(6, -4, -2.1, 0.9, 16)));
 
-        sceneObjects.add(new SceneObject(new Sphere(0, 8, 1, 5, 16, true)));
+        sceneObjects.add(new SceneObject(new Sphere(6, -4, -6, 5, 16, true)));
         sceneObjects.add(new SceneObject(new Plane(-2, 16, false)));
 
         // load light sources
-        sceneLights.add(new LightSource(0, 4, 4, 16));
+        sceneLights.add(new LightSource(6, -10, 4, 16));
         //sceneLights.add(new LightSource(4, -8, 4, 16));
 
     }

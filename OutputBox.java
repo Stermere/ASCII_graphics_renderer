@@ -16,10 +16,10 @@ public class OutputBox {
     public OutputBox(int[] resolution, char[][] charFrame){
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setSize(1920,1080);
-        outputSize = resolution[0] * resolution[1];
+        outputSize = resolution[0] * resolution[1] * 2 + resolution[1];
         String frame = charToString(charFrame);
         renderArea = new JTextArea(frame, resolution[0], resolution[1]);
-        renderArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        renderArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 10));
         renderArea.setForeground(Color.WHITE);
         renderArea.setBackground(Color.BLACK);
         window.add(renderArea);
