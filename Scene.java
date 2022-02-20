@@ -43,11 +43,11 @@ public class Scene {
         sceneObjects.add(new SceneObject(new Sphere(6, -0.2, 0.0, 0.7, 16)));
         sceneObjects.add(new SceneObject(new Sphere(6, -4, -2.1, 0.9, 16)));
 
-        //sceneObjects.add(new SceneObject(new Sphere(-12, 0, 2, 4, 16, true)));
-        sceneObjects.add(new SceneObject(new Plane(-2, 16, true)));
+        sceneObjects.add(new SceneObject(new Sphere(0, 8, 1, 5, 16, true)));
+        sceneObjects.add(new SceneObject(new Plane(-2, 16, false)));
 
         // load light sources
-        sceneLights.add(new LightSource(0, 0, 4, 16));
+        sceneLights.add(new LightSource(0, 4, 4, 16));
         //sceneLights.add(new LightSource(4, -8, 4, 16));
 
     }
@@ -90,7 +90,7 @@ public class Scene {
             }
         }
         else {
-            lowestDist = 0.1;
+            lowestDist = 0.05;
         }
         // if render distance is hit or a object is contacted calculate its shading and return
         if (lowestDist < 0.0001){

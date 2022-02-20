@@ -15,18 +15,18 @@ public class Main {
         // set the camera's initial position
         scene.camZ = 0;
         scene.camX = -2;
-        scene.camPitch = -20;
-        
-        // render the first frame without calling clear first
+        scene.camPitch = -10;
+
+        // set up the keyboard listener and display window
         char[][] frame = scene.renderFrame();
-        displayFrame(frame);
+        OutputBox output = new OutputBox(scene.resolution, frame);
 
         // main loop
         while (running){
             long startTime = System.nanoTime();
             frame = scene.renderFrame();
-            clearFrame();
-            displayFrame(frame);
+
+            output.outputFrame(output.charToString(frame));
 
             // move the camera up and down and the light source around the circles
             //scene.camZ = scene.camZ + (Math.cos((index * Math.PI / 180) * 2) / 30);
@@ -47,21 +47,5 @@ public class Main {
         avgTimePerframe = avgTimePerframe / index;
         System.out.println("on average rasterization took: " + avgTimePerframe/1000000 + " ms");
         System.out.println("this translates to " + 1000/(avgTimePerframe/1000000) + " frames per second");
-    }
-    // display a frame
-    public static void displayFrame(char[][] frame){
-        for (char[] line : frame){
-            String row = "";
-            for (char pix : line){
-                row = row + pix + ' ';
-            }
-            System.out.println(row);
-        }
-    }
-    // clear the last frame printed
-    public static void clearFrame(){
-        for (int i = 0; i < scene.resolution[1]; i++){
-            System.out.print("\033[F\r");
-        }
     }
 }
