@@ -90,7 +90,7 @@ public class Scene {
             }
         }
         else {
-            lowestDist = 0.05;
+            lowestDist = 0.001;
         }
         // if render distance is hit or a object is contacted calculate its shading and return
         if (lowestDist < 0.0001){
