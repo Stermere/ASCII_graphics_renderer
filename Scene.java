@@ -15,7 +15,7 @@ public class Scene {
 
 
     // settings
-    double FOV = 100;
+    double FOV = 70;
     int[] resolution = {125, 70}; // for 1440p monitors you need a fast cpu to run this at 30 fps
     //int[] resolution = {60, 35}; // for my laptop that is 1080 and scaled
     //int[] resolution = {200, 125}; // I dont know what cpu can run this at more than 10fps but if you zoom out your window it looks cool
@@ -43,7 +43,7 @@ public class Scene {
         sceneObjects.add(new SceneObject(new Sphere(6, -0.2, 0.0, 0.7, 16)));
         sceneObjects.add(new SceneObject(new Sphere(6, -4, -2.1, 0.9, 16)));
 
-        sceneObjects.add(new SceneObject(new Sphere(6, -4, -6, 5, 16, true)));
+        sceneObjects.add(new SceneObject(new Sphere(-6, -4, 6, 5, 16, true)));
         sceneObjects.add(new SceneObject(new Plane(-2, 16, false)));
 
         // load light sources
