@@ -1,5 +1,10 @@
 // the interface between the scene renderer and different object types
 
+/* to be honest if you are reading this I hate this class and want to find a more clean way to do this 
+ * that doesnt also cause the scene renderer to become less clean and since that is the current code that grows
+ * and changes more frequently this is where the bad code hides
+*/
+
 public class SceneObject {
     // all but one object should be null
     Sphere sphere = null;

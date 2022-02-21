@@ -1,7 +1,7 @@
 // class to define a 2d plane in 3d space
 // currently only implemented to make a floor to make a more complete scene
 
-public class Plane {
+public class Plane{
     double z = 0;
     double c = 0;
     boolean reflectivity = false;
