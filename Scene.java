@@ -105,6 +105,9 @@ public class Scene {
                     luminenceFromLight = dotProduct(lightVector[0], lightVector[1], lightVector[2], normalVector[0], normalVector[1], normalVector[2]);
                     luminence += luminenceFromLight;
                 }
+                else{
+                    // TODO make shadows dark but not black
+                }
             }
 
             // check if the object has reflectivity and if so reflect the ray and find its next collision
