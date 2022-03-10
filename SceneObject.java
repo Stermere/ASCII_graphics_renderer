@@ -22,7 +22,7 @@ public class SceneObject {
             return sphere.signedDistTo(x_, y_, z_);
         }
         else if (plane != null) {
-            return plane.signedDistTo(z_);
+            return plane.signedDistTo(z_, y_, z_);
         }
         return (Double) null;
 
@@ -33,7 +33,7 @@ public class SceneObject {
             return sphere.getNormalVector(x_, y_, z_);
         }
         else if (plane != null) {
-            return plane.getNormalVector(z_);
+            return plane.getNormalVector();
         }
         return null;
     
@@ -57,5 +57,21 @@ public class SceneObject {
             return plane.reflectivity;
         }
         return false;
+    }
+
+    public void changeCords(double x, double y, double z){
+        if (sphere != null){
+            sphere.x += x;
+            sphere.y += y;
+            sphere.z += z;
+            
+        }
+        else if (plane != null){
+            plane.x += x;
+            plane.y += y;
+            plane.z += z;
+
+            
+        }
     }
 }

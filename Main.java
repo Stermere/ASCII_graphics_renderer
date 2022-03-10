@@ -13,13 +13,11 @@ public class Main {
         long avgTimePerframe = 0;
         
         // set the camera's initial position
-        scene.camZ = 0;
-        scene.camX = -2;
-        scene.camPitch = 0;
 
         // set up the keyboard listener and display window
         char[][] frame = scene.renderFrame();
         OutputBox output = new OutputBox(scene.resolution, frame);
+
 
         // main loop
         while (running){
@@ -29,6 +27,18 @@ public class Main {
             output.outputFrame(output.charToString(frame));
 
             output.input.updateCamPos(scene);
+
+            // make spheres wobble
+            int i = 0;
+            for (SceneObject object : scene.sceneObjects){
+                if (object.sphere != null){
+                    double x_ = (Math.cos(((index + (i * 10)) * Math.PI / 180) * 5) * 0.1);
+                    double y_ = (Math.cos(((index + (i * 10)) * Math.PI / 180) * 5) * 0.1);
+                    double z_ = (Math.cos(((index + (i * 10)) * Math.PI / 180) * 5) * 0.1);
+                    object.changeCords(x_, y_, z_);
+                    i++;
+                }
+            }
 
             // move the camera up and down and the light source around the circles
             //scene.camZ = scene.camZ + (Math.cos((index * Math.PI / 180) * 2) / 30);

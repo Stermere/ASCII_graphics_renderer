@@ -10,21 +10,21 @@ public class Scene {
     double camPitch = 0; // pitch
     
     // maximum iterations of of ray marching
-    static int MAXITERS = 1500;
+    static int MAXITERS = 1000;
     static int BOUNCECOUNT = 5;
 
 
     // settings
-    double FOV = 70;
-    int[] resolution = {125, 70}; // for 1440p monitors you need a fast cpu to run this at 30 fps
+    double FOV = 90;
+    int[] resolution = {125, 70}; // for 1440p monitors you need a fast cpu to run this at 60 fps
     //int[] resolution = {60, 35}; // for my laptop that is 1080 and scaled
     //int[] resolution = {200, 125}; // I dont know what cpu can run this at more than 10fps but if you zoom out your window it looks cool
 
     double renderDist = 100;
-    double backroundColor = 0;
+    double backroundColor = 1;
     double degreePerPixle = FOV / Math.sqrt((Math.pow(resolution[0], 2) + Math.pow(resolution[1], 2)));
     // 16 char pallet
-    char[] pixValues = {' ', '.', ',', '-', '"', '~', ':', ';', '^', '>', '=', '+', '!', '*', '#', '$', '@'};
+    char[] pixValues = {' ', '.', ',', '-', '"', '~', ':', '^', '>', '=', '+', '!', '*', '#', '$', '@'};
     // 16 char pallet 2
     //char[] pixValues = {'.','-',',',':','^','~','*','=','+','>','a','q','#','$','%','@'};
 
@@ -44,10 +44,11 @@ public class Scene {
         sceneObjects.add(new SceneObject(new Sphere(6, -4, -2.1, 0.9, 16)));
 
         sceneObjects.add(new SceneObject(new Sphere(-6, -4, 6, 5, 16, true)));
-        sceneObjects.add(new SceneObject(new Plane(-2, 16, false)));
+        sceneObjects.add(new SceneObject(new Plane(0, 0, -2, 16)));
+        //sceneObjects.add(new SceneObject(new Plane(5, 5, 0, 16, -90, 0, true)));
 
         // load light sources
-        sceneLights.add(new LightSource(6, -10, 4, 16));
+        sceneLights.add(new LightSource(0, 10, 6, 16));
         //sceneLights.add(new LightSource(4, -8, 4, 16));
 
     }
@@ -211,12 +212,12 @@ public class Scene {
     }
 
     // calculate the dot product of two normalized vectors
-    public double dotProduct(double x1, double y1, double z1, double x2, double y2, double z2){
+    public static double dotProduct(double x1, double y1, double z1, double x2, double y2, double z2){
         return (x1*x2)+(y1*y2)+(z1*z2);
     }
 
     // convert angle values in to a unit vector
-    public double[] angleToVector(double a, double b){
+    public static double[] angleToVector(double a, double b){
         double z = Math.sin(b * Math.PI / 180);
         double x = (Math.cos(b * Math.PI / 180)) * Math.cos(a * Math.PI / 180);
         double y = (Math.cos(b * Math.PI / 180)) * Math.sin(a * Math.PI / 180);
@@ -225,7 +226,7 @@ public class Scene {
     }
 
     // its best not to use this since it is slower but it also can intrduce hard to find bugs
-    public double[] vectorToAngle(double[] vector){
+    public static double[] vectorToAngle(double[] vector){
         double x = vector[0];
         double y = vector[1];
         double z = vector[2];
@@ -236,14 +237,14 @@ public class Scene {
     }
 
     // normalizes a vector
-    public double[] normalizeVector(double x, double y, double z){
+    public static double[] normalizeVector(double x, double y, double z){
         double hypotonusDist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
         double[] vector = {(x/hypotonusDist), (y/hypotonusDist), (z/hypotonusDist)};
         return vector;
     }
 
     // turns a vector around
-    public double[] invertVector(double[] vector){
+    public static double[] invertVector(double[] vector){
         vector[0] = -vector[0];
         vector[1] = -vector[1];
         vector[2] = -vector[2];
