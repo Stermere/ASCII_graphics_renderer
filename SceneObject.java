@@ -22,7 +22,7 @@ public class SceneObject {
             return sphere.signedDistTo(x_, y_, z_);
         }
         else if (plane != null) {
-            return plane.signedDistTo(z_, y_, z_);
+            return plane.signedDistTo(x_, y_, z_);
         }
         return (Double) null;
 

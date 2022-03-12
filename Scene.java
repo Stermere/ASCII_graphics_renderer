@@ -24,7 +24,7 @@ public class Scene {
     double backroundColor = 1;
     double degreePerPixle = FOV / Math.sqrt((Math.pow(resolution[0], 2) + Math.pow(resolution[1], 2)));
     // 16 char pallet
-    char[] pixValues = {' ', '.', ',', '-', '"', '~', ':', '^', '>', '=', '+', '!', '*', '#', '$', '@'};
+    char[] pixValues = {' ', '.', ',', '-', '"', '~', ':', '^', '>', '!', '*', '+', '=', '$', '#', '@'};
     // 16 char pallet 2
     //char[] pixValues = {'.','-',',',':','^','~','*','=','+','>','a','q','#','$','%','@'};
 
@@ -44,7 +44,7 @@ public class Scene {
         sceneObjects.add(new SceneObject(new Sphere(6, -4, -2.1, 0.9, 16)));
 
         sceneObjects.add(new SceneObject(new Sphere(-6, -4, 6, 5, 16, true)));
-        sceneObjects.add(new SceneObject(new Plane(0, 0, -2, 16)));
+        sceneObjects.add(new SceneObject(new Plane(0, 0, -4, 10, 16)));
         //sceneObjects.add(new SceneObject(new Plane(5, 5, 0, 16, -90, 0, true)));
 
         // load light sources
