@@ -51,9 +51,10 @@ public class Plane{
         
         // apply the limit to the dist
         double distConfined = distFromOrigin - size;
-        if (distConfined > 0 ){
-            dist = Math.sqrt(Math.pow(dist, 2) + Math.pow(distConfined, 2));
+        if (distConfined < 0){
+            distConfined = 0;
         }
+        dist = Math.sqrt(Math.pow(dist, 2) + Math.pow(distConfined, 2));
 
         return dist;
     }
