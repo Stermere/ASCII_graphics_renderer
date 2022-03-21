@@ -74,4 +74,16 @@ public class SceneObject {
             
         }
     }
+    public void changeAngle(double p, double y){
+        if (sphere != null){
+            // spheres do not have a angle so do nothing
+            
+        }
+        else if (plane != null){
+            plane.angleOfNorm[0] += y;
+            plane.angleOfNorm[1] += p;
+            plane.normalVector = Scene.angleToVector(plane.angleOfNorm[0], plane.angleOfNorm[1]);
+
+        }
+    }
 }

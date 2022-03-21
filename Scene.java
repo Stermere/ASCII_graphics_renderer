@@ -15,8 +15,8 @@ public class Scene {
 
 
     // settings
-    double FOV = 90;
-    int[] resolution = {125, 70}; // for 1440p monitors you need a fast cpu to run this at 60 fps
+    double FOV = 70;
+    int[] resolution = {155, 70}; // for 1440p monitors you need a fast cpu to run this at 60 fps
     //int[] resolution = {60, 35}; // for my laptop that is 1080 and scaled
     //int[] resolution = {200, 125}; // I dont know what cpu can run this at more than 10fps but if you zoom out your window it looks cool
 
@@ -44,7 +44,7 @@ public class Scene {
         sceneObjects.add(new SceneObject(new Sphere(6, -4, -2.1, 0.9, 16)));
 
         sceneObjects.add(new SceneObject(new Sphere(-6, -4, 6, 5, 16, true)));
-        sceneObjects.add(new SceneObject(new Plane(5, 15, 0, 16, -90, 0, 5, true)));
+        sceneObjects.add(new SceneObject(new Plane(5, 15, 0, 16, 90, 0, 5, true)));
 
         sceneObjects.add(new SceneObject(new Plane(0, 0, -4, 10, 16)));
 
@@ -161,7 +161,7 @@ public class Scene {
         }
 
         // if we hit an object the pixle should be in shadow so return false
-        if (lowestDist < 0.0001){
+        if (lowestDist < 0.001){
             return false;
         }
         // if we passed the light there where no objects inbetween so return true

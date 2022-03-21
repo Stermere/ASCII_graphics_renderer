@@ -7,6 +7,7 @@ public class Main {
         int index = 0;
         scene.loadScene();
         LightSource light = scene.sceneLights.get(0);
+        
         boolean running = true;
 
         // keep track time taken to render and display each frame

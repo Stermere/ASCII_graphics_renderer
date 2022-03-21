@@ -40,10 +40,8 @@ public class Plane{
     }
 
     public double signedDistTo(double x_, double y_, double z_){
-        double[] norm = getNormalVector();
-
         // formula for dist of a infinant plane
-        double dist = Scene.dotProduct(norm[0], norm[1], norm[2], x_-x, y_-y, z_-z);
+        double dist = Scene.dotProduct(normalVector[0], normalVector[1], normalVector[2], x_-x, y_-y, z_-z);
         
         // limit the size of the plane by doing some trig
         double hypotonusDist = Math.sqrt(Math.pow(x_-x, 2) + Math.pow(y_-y, 2) + Math.pow(z_-z, 2));
@@ -63,4 +61,5 @@ public class Plane{
         return normalVector;
 
     }
+
 }
