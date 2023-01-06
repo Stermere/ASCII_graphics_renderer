@@ -22,6 +22,12 @@ public class LightSource {
         return vector;
     }
 
+    public void changeCords(double x_, double y_, double z_){
+        x += x_;
+        y += y_;
+        z += z_;
+    }
+
     public void setX(double val){
         x = val;
     }
